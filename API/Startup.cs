@@ -15,6 +15,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Core.Interfaces;
+using API.Helpers;
+
 namespace API
 {
     public class Startup
@@ -31,7 +33,7 @@ namespace API
         {
             services.AddScoped<IProductRepository,ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
-             
+            services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
             services.AddDbContext<StoreContext>(x=> x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddSwaggerGen(c =>
@@ -53,7 +55,8 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+//config to serving static content
+app.UseStaticFiles();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
