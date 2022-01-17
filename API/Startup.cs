@@ -19,6 +19,7 @@ using API.Helpers;
 using API.Middleware;
 using API.Errors;
 using API.Extensions;
+using StackExchange.Redis;
 
 namespace API
 {
@@ -38,6 +39,12 @@ namespace API
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
             services.AddDbContext<StoreContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddSingleton<IConnectionMultiplexer>(c =>
+            {
+                var configuration = ConfigurationOptions.Parse(Configuration.GetConnectionString("Redis"),true);
+           
+                return ConnectionMultiplexer.Connect(configuration);
+                });
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
             // enable cors
